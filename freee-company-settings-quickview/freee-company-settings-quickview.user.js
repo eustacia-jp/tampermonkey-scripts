@@ -1,13 +1,14 @@
 // ==UserScript==
 // @name         freee事業所設定クイックビュー
 // @namespace    https://eustacia.jp/
-// @version      1.17.0
-// @updateURL    https://github.com/eustacia-jp/tampermonkey-scripts/raw/refs/heads/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
-// @downloadURL  https://github.com/eustacia-jp/tampermonkey-scripts/raw/refs/heads/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
-// @description  freee会計の画面上部に常時ボタンを表示し（表示位置は左端からのpxで設定変更可）、クリックすると現在ログイン中の事業所の消費税課税方式・簡易課税事業区分（みなし仕入率付き）・上級者向け設定への博士帽アイコン・インボイス少額特例・買い手側対応・登録番号・決算月・業種・法人番号・住所（マップ検索付き）などをその場で一覧表示し、各項目名クリックで該当の設定編集画面を開けます。パネル上の歯車アイコンから表示項目・ボタン位置を設定・保存でき、内容のコピーや外部検索、矛盾のある設定への注意表示、24時間キャッシュと再取得もできます。
+// @version      1.18.0
+// @description  freee会計の画面最上部にボタンを表示し、クリックすると現在ログインしている事業所の基本情報・消費税・インボイス制度関連の設定などをまとめて確認・コピーできます。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=secure.freee.co.jp
+// @updateURL    https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
+// @downloadURL  https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
+// @supportURL   https://github.com/eustacia-jp/tampermonkey-scripts/issues
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // @grant        GM_cookie
