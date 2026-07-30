@@ -8,6 +8,7 @@
 | スクリプト | 説明 | インストール |
 |---|---|---|
 | [freee事業所設定クイックビュー](./freee-company-settings-quickview/) | freee会計でログイン中の事業所の基本情報・消費税などの設定をワンクリックで確認・コピーできるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js) |
+| [freee Help Link Copier](./freee-help-link-copier/) | freeeヘルプセンターの記事ページで、タイトルとURLをワンクリックでコピーできるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-help-link-copier/freee-help-link-copier.user.js) |
 
 各スクリプトの詳しい説明・使い方は、上記リンク先のフォルダ内README.mdをご覧ください。
 
