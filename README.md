@@ -1,0 +1,2 @@
+# tampermonkey-scripts
+freeeなどで使用できるTampermonkeyスクリプト
