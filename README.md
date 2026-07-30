@@ -1,6 +1,6 @@
 # tampermonkey-scripts
 
-ユースタシア合同会社の代表 Daiki MORI が個人で作成したTampermonkeyユーザースクリプトを置いているリポジトリです。
+ユースタシア合同会社の代表 Daiki MORI が個人で作成したTampermonkeyユーザースクリプトを置いているリポジトリです。  
 主にfreee会計を使った業務向けに作っています。
 
 ## スクリプト一覧
