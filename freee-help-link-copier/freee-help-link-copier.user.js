@@ -6,9 +6,9 @@
 // @author       Eustacia.JP w/ Claude
 // @match        https://support.freee.co.jp/hc/ja/articles/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=support.freee.co.jp
-// @updateURL    https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/freee-help-link-copier/main/freee-help-link-copier.user.js
-// @downloadURL  https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/freee-help-link-copier/main/freee-help-link-copier.user.js
-// @supportURL   https://github.com/YOUR_GITHUB_USERNAME/freee-help-link-copier/issues
+// @updateURL    https://github.com/eustacia-jp/tampermonkey-scripts/raw/refs/heads/main/freee-help-link-copier/freee-help-link-copier.user.js
+// @downloadURL  https://github.com/eustacia-jp/tampermonkey-scripts/raw/refs/heads/main/freee-help-link-copier/freee-help-link-copier.user.js
+// @supportURL   https://github.com/eustacia-jp/tampermonkey-scripts/issues
 // @grant        GM_setClipboard
 // @grant        GM_addStyle
 // @grant        GM_getValue
