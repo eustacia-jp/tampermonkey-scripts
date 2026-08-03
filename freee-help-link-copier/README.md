@@ -4,6 +4,14 @@ freeeヘルプセンター（support.freee.co.jp）の記事ページに、タ�
 
 ヘルプページのURLをメールやメモに貼り付ける際、タイトルと合わせてきれいな形式でコピーしたい、というニーズから作りました。
 
+## スクリーンショット
+
+▼ページタイトル  
+![ページタイトルとURLをコピー](./screenshot_1.png)
+
+▼セクションの見出し  
+![セクションの見出しとURLをコピー](./screenshot_2.png)
+
 ## インストール
 
 [Raw URLはこちら](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-help-link-copier/freee-help-link-copier.user.js)
