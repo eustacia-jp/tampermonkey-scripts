@@ -1,14 +1,17 @@
 // ==UserScript==
-// @name         freee 口座一覧コピー
+// @name         freee 口座一覧コピー＆表示拡張
 // @namespace    https://eustacia.jp/
-// @version      2.3.1
-// @description  freee会計「口座」一覧画面(walletables)の口座情報をワンクリックでコピー。口座詳細画面にも勘定科目バッジと総勘定元帳ボタンを表示。
+// @version      2.5.0
+// @description  freee会計「口座」一覧画面(walletables)の口座情報をワンクリックでコピー。口座詳細画面にも勘定科目バッジと総勘定元帳ボタンを表示(クレジットカードは現預金レポートボタンも追加。挿入起点は口座振替の一覧→取引の一覧の順でフォールバック)。非表示口座の残高不整合検出、「同期中」ステータス表記にも対応。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/walletables*
 // @match        https://secure.freee.co.jp/bank_account/walletables/*
 // @match        https://secure.freee.co.jp/credit_card/walletables/*
 // @match        https://secure.freee.co.jp/wallet/walletables/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=secure.freee.co.jp
+// @updateURL    https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js
+// @downloadURL  https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js
+// @supportURL   https://github.com/eustacia-jp/tampermonkey-scripts/issues
 // @grant        none
 // ==/UserScript==
 
@@ -34,11 +37,13 @@
   // freeeが検出する「残高ずれ」以外にも、不自然な残高の符号を独自に検出する
   // ・クレジットカードの登録残高がプラス(1円以上)
   // ・口座名が「現金」ちょうどで、登録残高がマイナス
-  function hasInvalidBalanceSign({ category, name, regBalance }) {
+  // ・非表示の口座なのに登録残高が0円でない
+  function hasInvalidBalanceSign({ category, name, status, regBalance }) {
     const amount = parseAmount(regBalance);
     if (amount === null) return false;
     if (category === 'クレジットカード' && amount > 0) return true;
     if (name === '現金' && amount < 0) return true;
+    if (status === '非表示' && amount !== 0) return true;
     return false;
   }
 
@@ -70,7 +75,7 @@
       const regBalance = regBalanceEl ? regBalanceEl.textContent.trim() : '';
       const syncBalance = syncBalanceEl ? syncBalanceEl.textContent.trim() : '';
       const status = statusEl ? statusEl.textContent.trim() : '';
-      const isMismatch = isBalanceMismatch(row) || hasInvalidBalanceSign({ category, name, regBalance });
+      const isMismatch = isBalanceMismatch(row) || hasInvalidBalanceSign({ category, name, status, regBalance });
 
       let lastSync = '';
       if (lastSyncCell) {
@@ -223,6 +228,8 @@
         return '⛔未同期';
       case '同期失敗':
         return '⚠️エラー';
+      case '同期中':
+        return '⏳同期中';
       case '連携非対応':
       case '非表示':
         return null;
@@ -530,6 +537,7 @@
   // -------------------------------------------------
   const DETAIL_BADGE_ID = 'eustacia-detail-group-name-badge';
   const DETAIL_GL_BUTTON_ID = 'eustacia-detail-gl-button';
+  const DETAIL_CASH_BALANCE_BUTTON_ID = 'eustacia-detail-cash-balance-button';
 
   function findDetailPageH1() {
     return document.querySelector('h1[class*="_title--pageHeader"]');
@@ -538,6 +546,41 @@
   function findCashBalanceJumpButton() {
     const link = document.querySelector('a[href*="/reports/cash_balance"]');
     return link ? link.closest('.vb-jumpButton') : null;
+  }
+
+  // クレジットカードの詳細画面には「現預金レポート」ボタンが元々無いため、
+  // 「口座振替の一覧」ボタンを起点として使う。
+  // 「口座振替の一覧」自体が将来的に無くなる可能性があるため、
+  // 見つからない場合は「取引の一覧」ボタンにフォールバックする。
+  function findTransferJumpButton() {
+    const link = document.querySelector('a[href*="/deals#code=transfer"]');
+    return link ? link.closest('.vb-jumpButton') : null;
+  }
+
+  // 「取引の一覧」ボタン(href例: /deals#walletable[]=xxx&walletable_id[]=123)
+  // 「口座振替の一覧」(href例: /deals#code=transfer&...)とはhash部分の先頭で区別できる
+  function findTransactionsJumpButton() {
+    const link = document.querySelector('a[href^="/deals#walletable"]');
+    return link ? link.closest('.vb-jumpButton') : null;
+  }
+
+  // 「明細の一覧」「取引の一覧」ボタンのリンクからwalletable_idを抜き出す
+  // (現預金レポートをクレジットカードで開く際に walletable_for パラメータとして必要)
+  function extractWalletableIdFromPage() {
+    const txnLink = document.querySelector('a[href^="/wallet_txns#walletable="]');
+    if (txnLink) {
+      const m = txnLink.getAttribute('href').match(/walletable=(\d+)/);
+      if (m) return m[1];
+    }
+    const dealsLink = document.querySelector(
+      'a[href*="walletable_id%5B%5D="], a[href*="walletable_id[]="]'
+    );
+    if (dealsLink) {
+      const href = dealsLink.getAttribute('href');
+      const m = href.match(/walletable_id(?:%5B%5D|\[\])=(\d+)/);
+      if (m) return m[1];
+    }
+    return null;
   }
 
   // URLのプレフィックスから「銀行口座」相当かどうかを判定する(一覧画面のカテゴリー名と揃える)
@@ -588,20 +631,43 @@
       }
     }
 
-    // 総勘定元帳ボタン(「現預金レポート」ボタンの右)
-    if (!document.getElementById(DETAIL_GL_BUTTON_ID)) {
-      const cashBalanceBtn = findCashBalanceJumpButton();
-      if (cashBalanceBtn) {
-        const glBtn = cashBalanceBtn.cloneNode(true);
-        glBtn.id = DETAIL_GL_BUTTON_ID;
-        const a = glBtn.querySelector('a');
-        if (a) {
-          a.href = buildGeneralLedgerUrl(accountName);
-          const textEl = a.querySelector('.vb-button__text');
-          if (textEl) textEl.textContent = '総勘定元帳';
+    // 現預金レポート・総勘定元帳ボタンの挿入位置を決める。
+    // 通常は「現預金レポート」ボタンの右に総勘定元帳ボタンを追加するが、
+    // クレジットカードには「現預金レポート」ボタンが元々無いため、
+    // 「口座振替の一覧」ボタン(無ければ「取引の一覧」ボタン)の右に
+    // 現預金レポート・総勘定元帳の両方を追加する。
+    let anchorBtn = findCashBalanceJumpButton();
+
+    if (!anchorBtn && getCategoryFromDetailUrl() === 'クレジットカード') {
+      if (!document.getElementById(DETAIL_CASH_BALANCE_BUTTON_ID)) {
+        const insertionBaseBtn = findTransferJumpButton() || findTransactionsJumpButton();
+        const walletableId = extractWalletableIdFromPage();
+        if (insertionBaseBtn && walletableId) {
+          const cashBtn = insertionBaseBtn.cloneNode(true);
+          cashBtn.id = DETAIL_CASH_BALANCE_BUTTON_ID;
+          const a = cashBtn.querySelector('a');
+          if (a) {
+            a.href = `https://secure.freee.co.jp/reports/cash_balance?walletable_for=${walletableId}`;
+            const textEl = a.querySelector('.vb-button__text');
+            if (textEl) textEl.textContent = '現預金レポート';
+          }
+          insertionBaseBtn.insertAdjacentElement('afterend', cashBtn);
         }
-        cashBalanceBtn.insertAdjacentElement('afterend', glBtn);
       }
+      anchorBtn = document.getElementById(DETAIL_CASH_BALANCE_BUTTON_ID);
+    }
+
+    // 総勘定元帳ボタン(上で決めたanchorBtnの右)
+    if (anchorBtn && !document.getElementById(DETAIL_GL_BUTTON_ID)) {
+      const glBtn = anchorBtn.cloneNode(true);
+      glBtn.id = DETAIL_GL_BUTTON_ID;
+      const a = glBtn.querySelector('a');
+      if (a) {
+        a.href = buildGeneralLedgerUrl(accountName);
+        const textEl = a.querySelector('.vb-button__text');
+        if (textEl) textEl.textContent = '総勘定元帳';
+      }
+      anchorBtn.insertAdjacentElement('afterend', glBtn);
     }
   }
 
