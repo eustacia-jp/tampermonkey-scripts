@@ -1,17 +1,14 @@
 // ==UserScript==
 // @name         freee 口座一覧コピー＆表示拡張
 // @namespace    https://eustacia.jp/
-// @version      2.5.0
-// @description  freee会計「口座」一覧画面(walletables)の口座情報をワンクリックでコピー。口座詳細画面にも勘定科目バッジと総勘定元帳ボタンを表示(クレジットカードは現預金レポートボタンも追加。挿入起点は口座振替の一覧→取引の一覧の順でフォールバック)。非表示口座の残高不整合検出、「同期中」ステータス表記にも対応。
+// @version      2.5.1
+// @description  freee会計「口座」一覧画面(walletables)の口座情報をワンクリックでコピー。口座詳細画面にも勘定科目バッジと総勘定元帳ボタンを表示(クレジットカードは現預金レポートボタンも追加。挿入起点は口座振替の一覧→取引の一覧の順でフォールバック)。非表示口座の残高不整合検出、「同期中」ステータス表記にも対応。freee側のCSSクラス名ハッシュ変更に追従。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/walletables*
 // @match        https://secure.freee.co.jp/bank_account/walletables/*
 // @match        https://secure.freee.co.jp/credit_card/walletables/*
 // @match        https://secure.freee.co.jp/wallet/walletables/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=secure.freee.co.jp
-// @updateURL    https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js
-// @downloadURL  https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js
-// @supportURL   https://github.com/eustacia-jp/tampermonkey-scripts/issues
 // @grant        none
 // ==/UserScript==
 
@@ -61,15 +58,15 @@
       const nameCell = row.querySelector('[data-testid="stdui-table-cell-口座名"]');
       if (!nameCell) return;
 
-      const nameEl = nameCell.querySelector('.vb-text--weightBold');
+      const nameEl = nameCell.querySelector('[class*="vb-text"]');
       const categoryEl = nameCell.querySelector('[class*="_vb-statusIcon"]');
       const name = nameEl ? nameEl.textContent.trim() : '';
       const category = categoryEl ? categoryEl.textContent.trim() : '';
       if (!name) return;
 
-      const regBalanceEl = row.querySelector('[data-testid="stdui-table-cell-登録残高"] .vb-text');
-      const syncBalanceEl = row.querySelector('[data-testid="stdui-table-cell-同期残高"] .vb-text');
-      const statusEl = row.querySelector('[data-testid="stdui-table-cell-ステータス"] .vb-text');
+      const regBalanceEl = row.querySelector('[data-testid="stdui-table-cell-登録残高"] [class*="vb-text"]');
+      const syncBalanceEl = row.querySelector('[data-testid="stdui-table-cell-同期残高"] [class*="vb-text"]');
+      const statusEl = row.querySelector('[data-testid="stdui-table-cell-ステータス"] [class*="vb-text"]');
       const lastSyncCell = row.querySelector('[data-testid="stdui-table-cell-最終同期日時"]');
 
       const regBalance = regBalanceEl ? regBalanceEl.textContent.trim() : '';
@@ -476,7 +473,7 @@
     const nameCell = row.querySelector('[data-testid="stdui-table-cell-口座名"]');
     if (!nameCell) return;
 
-    const nameEl = nameCell.querySelector('.vb-text--weightBold');
+    const nameEl = nameCell.querySelector('[class*="vb-text"]');
     const categoryEl = nameCell.querySelector('[class*="_vb-statusIcon"]');
     const name = nameEl ? nameEl.textContent.trim() : '';
     const category = categoryEl ? categoryEl.textContent.trim() : '';
@@ -497,7 +494,7 @@
     }
 
     // 登録残高を総勘定元帳へのリンクにする
-    const regEl = row.querySelector('[data-testid="stdui-table-cell-登録残高"] .vb-text');
+    const regEl = row.querySelector('[data-testid="stdui-table-cell-登録残高"] [class*="vb-text"]');
     if (regEl && regEl.textContent.trim()) {
       const link = document.createElement('a');
       link.href = buildGeneralLedgerUrl(name);
