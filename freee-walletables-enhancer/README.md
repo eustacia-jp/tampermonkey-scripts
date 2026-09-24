@@ -38,7 +38,8 @@ freee会計の口座一覧画面（`/walletables`）に、口座一覧をコピ�
 
 [Raw URLはこちら](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js)
 
-[Tampermonkey](https://www.tampermonkey.net/) 拡張機能が導入済みのブラウザで上記リンクを開くと、インストール確認画面が表示されます。
+[Tampermonkey](https://www.tampermonkey.net/) 拡張機能が導入済みのブラウザで上記リンクを開くと、インストール確認画面が表示されます。  
+一度インストールすると、以降は自動的に最新版にアップデートされます。
 
 ## できること
 
@@ -106,7 +107,7 @@ freee会計の口座一覧画面（`/walletables`）に、口座一覧をコピ�
 
 - 本スクリプトはfreeeの非公開・非公式なページ構造や内部API・埋め込みデータ（`freee.data.get(...)`）に依存している部分があります。freee側の仕様変更により、予告なく一部または全部が動作しなくなる可能性があります
 - 特に「勘定科目（決算書表示名）」「期末残高」「資産・負債の判定」の取得は、freeeの正式なAPIドキュメントに載っていない内部エンドポイントや、ページに埋め込まれた内部データ構造を利用しています。将来的にアクセスできなくなる可能性があります
-- 表示される内容はあくまで参考情報として利用し、実際の残高等の確認はご自身で行うようにしてください
+- 表示される内容はあくまで参考情報として使用し、実際の残高等の確認はご自身で行うようにしてください
 - 不具合や要望があれば、[Issues](https://github.com/eustacia-jp/tampermonkey-scripts/issues)でお知らせいただけると助かります
 
 ## 更新履歴
