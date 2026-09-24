@@ -22,7 +22,8 @@ freee会計にログイン中、画面上部に常時表示されるボタンか
 
 [Raw URLはこちら](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js)
 
-[Tampermonkey](https://www.tampermonkey.net/) 拡張機能が導入済みのブラウザで上記リンクを開くと、インストール確認画面が表示されます。
+[Tampermonkey](https://www.tampermonkey.net/) 拡張機能が導入済みのブラウザで上記リンクを開くと、インストール確認画面が表示されます。  
+一度インストールすると、以降は自動的に最新版にアップデートされます。
 
 ## できること
 
