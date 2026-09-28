@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         freee 自動で経理：一部入出金補完・消込行クリック選択
+// @name         freee 自動で経理の一部入出金補完
 // @namespace    http://tampermonkey.net/
 // @version      1.1
-// @description  freee会計の「自動で経理」における未決済取引の消込操作を楽にします。「一部入金/出金にする」をクリックしたときに明細金額を自動入力し、未決済取引の行はどこをクリックしても選択できるようにします。
+// @description  freee会計の「自動で経理」における未決済取引の消込操作を楽にします。「一部入金/出金にする」をクリックしたときに明細の金額を自動入力し、未決済取引の行はどこをクリックしても選択できるようにします。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/wallet_txns*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=freee.co.jp
