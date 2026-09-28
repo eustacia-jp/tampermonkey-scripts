@@ -9,7 +9,7 @@
 |---|---|---|
 | [freee事業所設定クイックビュー](./freee-company-settings-quickview/) | freee会計でログイン中の事業所の基本情報・消費税などの設定をワンクリックで確認・コピーできるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js) |
 | [freee Help Link Copier](./freee-help-link-copier/) | freeeヘルプセンターの記事ページで、タイトルとURLをワンクリックでコピーできるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-help-link-copier/freee-help-link-copier.user.js) |
-| [freee 自動で経理：一部入出金補完・消込行クリック選択](./freee-reconciliation-helper/) | freee会計の「自動で経理」で、未決済取引の一部入出金額を自動入力し、未決済取引一覧の行クリック選択もできるようにするスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-reconciliation-helper/freee-reconciliation-helper.user.js) |
+| [freee 自動で経理の一部入出金補完](./freee-reconciliation-helper/) | freee会計の「自動で経理」で、未決済取引の一部入出金額を自動入力し、未決済取引一覧の行クリック選択もできるようにするスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-reconciliation-helper/freee-reconciliation-helper.user.js) |
 | [freee 口座一覧コピー＆表示拡張](./freee-walletables-enhancer/) | freee会計の口座一覧・口座詳細画面を拡張し、口座一覧のコピー、勘定科目の確認、総勘定元帳を開く機能を追加するスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js) |
 
 各スクリプトの詳しい説明・使い方は、上記リンク先のフォルダ内README.mdをご覧ください。
