@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name         freee事業所設定クイックビュー
 // @namespace    https://eustacia.jp/
-// @version      1.18.0
-// @description  freee会計の画面最上部にボタンを表示し、クリックすると現在ログインしている事業所の基本情報・消費税・インボイス制度関連の設定などをまとめて確認・コピーできます。
+// @version      1.19.0
+// @description  freee会計の画面最上部にボタンを表示し、クリックすると現在ログインしている事業所の基本情報・消費税・インボイス制度関連の設定などをまとめて確認・コピーできます。各項目名をクリックすると、該当の設定編集画面が開きます。パネル上の歯車アイコンから表示項目・ボタン位置を設定可能です。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/*
-// @icon         https://www.google.com/s2/favicons?sz=64&domain=secure.freee.co.jp
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=freee.co.jp
 // @updateURL    https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
 // @downloadURL  https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-company-settings-quickview/freee-company-settings-quickview.user.js
 // @supportURL   https://github.com/eustacia-jp/tampermonkey-scripts/issues
@@ -125,10 +125,46 @@
     + '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>'
     + '<text x="12" y="16" text-anchor="middle" font-size="11" font-family="Arial, Helvetica, sans-serif" font-weight="bold" fill="currentColor">T</text>'
     + '</svg>';
+  // 少額特例の説明用：「?」を丸で囲んだアイコン
+  const QUESTION_CIRCLE_ICON_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">'
+    + '<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.6"/>'
+    + '<text x="12" y="16.5" text-anchor="middle" font-size="12" font-family="Arial, Helvetica, sans-serif" font-weight="bold" fill="currentColor">?</text>'
+    + '</svg>';
+  // 少額特例（一定規模以下の事業者に対する事務負担の軽減措置）の説明ページ
+  const NTA_SMALL_AMOUNT_EXCEPTION_URL = 'https://www.nta.go.jp/publication/pamph/shohi/kaisei/202304/02.htm';
+  const SMALL_AMOUNT_HINT_TEXT = 'いずれかに該当する事業者が対象：\n'
+    + ' - 基準期間（前々年度）の課税売上高が1億円以下\n'
+    + ' - 特定期間（前年度の開始6か月間）の課税売上高が5,000万円以下\n\n'
+    + '1回の取引が税込1万円未満の課税仕入れであれば、インボイスの保存がなくても仕入税額控除を受けられます。\n'
+    + '免税事業者等への支払いでも「適格」として処理できます。\n'
+    + '※期間：2023年10月1日～2029年9月30日\n'
+    + '（クリックで国税庁の説明ページへ）';
+  // 少額特例の対象条件を説明するヒントアイコン。ホバーで条件の要約を表示し、クリックで国税庁の説明ページを開く。
+  const SMALL_AMOUNT_HINT_HTML = '<a href="' + escapeHtml(NTA_SMALL_AMOUNT_EXCEPTION_URL) + '" target="_blank" rel="noopener noreferrer" class="fqv-icon-link" title="'
+    + escapeHtml(SMALL_AMOUNT_HINT_TEXT) + '">' + QUESTION_CIRCLE_ICON_SVG + '</a>';
+  // 買い手側対応の説明用ヒント。ホバーで説明を表示し、クリックでfreeeのヘルプページを開く。
+  const BUYER_SIDE_HELP_URL = 'https://support.freee.co.jp/hc/ja/articles/23255522552217';
+  const BUYER_SIDE_HINT_TEXT = '取引の入力時に「適格」チェックボックスが表示され、経過措置用の税区分を選択可能になります。\n'
+    + ' - 使用する：一般課税の事業者向け\n'
+    + ' - 使用しない：免税・簡易課税の事業者向け\n'
+    + '（クリックでfreeeのヘルプページへ）';
+  const BUYER_SIDE_HINT_HTML = '<a href="' + escapeHtml(BUYER_SIDE_HELP_URL) + '" target="_blank" rel="noopener noreferrer" class="fqv-icon-link" title="'
+    + escapeHtml(BUYER_SIDE_HINT_TEXT) + '">' + QUESTION_CIRCLE_ICON_SVG + '</a>';
+  // 少額特例の一括修正の説明用ヒント。ホバーで説明を表示し、クリックでfreeeのヘルプページを開く（法人／個人で参照先が異なる）。
+  const SMALL_AMOUNT_BATCH_HELP_URL_CORPORATE = 'https://support.freee.co.jp/hc/ja/articles/12527153459737#h_01HBAES8RDEGZ8GQ11JK2879FN';
+  const SMALL_AMOUNT_BATCH_HELP_URL_INDIVIDUAL = 'https://support.freee.co.jp/hc/ja/articles/12527181883161#h_01HBAK8294DS749FKX7P338PZ4';
+  const SMALL_AMOUNT_BATCH_HINT_TEXT = '修正待ちリストで少額特例に該当する取引の税区分を一括修正できます。\n'
+    + '少額特例の対象事業者でない場合は使用できません。\n'
+    + '（クリックでfreeeのヘルプページへ）';
+  function buildSmallAmountBatchHintHtml(isCorp) {
+    const url = isCorp === false ? SMALL_AMOUNT_BATCH_HELP_URL_INDIVIDUAL : SMALL_AMOUNT_BATCH_HELP_URL_CORPORATE;
+    return '<a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer" class="fqv-icon-link" title="'
+      + escapeHtml(SMALL_AMOUNT_BATCH_HINT_TEXT) + '">' + QUESTION_CIRCLE_ICON_SVG + '</a>';
+  }
   // 組み合わせに注意してほしい項目に添える黄色い警告マーク
   const WARNING_ICON_HTML = '<span class="fqv-warn-icon" title="設定の確認が必要です" aria-label="注意">\u26A0\uFE0F</span>';
-  // 「上級者向け・要確認」の項目に添える博士帽アイコン（クリック不可なのでグレー固定）
-  const EXPERT_ICON_HTML = '<span class="fqv-inline-icon" title="上級者向けまたは標準と異なる設定です" aria-label="上級者向け設定">'
+  // 「上級者向け」の項目に添える博士帽アイコン（クリック不可なのでグレー固定）
+  const EXPERT_ICON_HTML = '<span class="fqv-inline-icon" title="知識や正確さが求められる設定です" aria-label="上級者">'
     + '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#999" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
     + '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v4c0 1.5 2.7 3 6 3s6-1.5 6-3v-4"/><path d="M20 10v5"/>'
     + '</svg></span>';
@@ -1318,11 +1354,14 @@
 
         const eligibleField = detail.smallAmountExceptionEligible;
         const eligibleIsNotApplicable = eligibleField && eligibleField.state === 'found' && eligibleField.value === 'false';
+        const batchField = detail.smallAmountExceptionCheck;
+        // 「少額特例の一括修正」が「使用しない」なら、対象事業者が未設定でも問題ないため警告は出さない
+        const batchIsDisabled = batchField && batchField.state === 'found' && batchField.label === '使用しない';
         smallAmountBatchHtml = eligibleIsNotApplicable
           ? muted('―')
           : fieldStateHtml(detail.smallAmountExceptionCheck);
 
-        if (buyerSideLabel === '使用する' && eligibleField && eligibleField.state === 'empty') {
+        if (buyerSideLabel === '使用する' && eligibleField && eligibleField.state === 'empty' && !batchIsDisabled) {
           smallAmountEligibleExtraHtml = WARNING_ICON_HTML;
         } else if (eligibleIsNotApplicable) {
           smallAmountEligibleExtraHtml = EXPERT_ICON_HTML;
@@ -1356,12 +1395,15 @@
         registrationExtraHtml = '<a href="' + escapeHtml(invoiceUrl) + '" target="_blank" rel="noopener noreferrer" class="fqv-icon-link" title="国税庁 インボイス発行事業者公表サイトで検索">' + T_CIRCLE_ICON_SVG + '</a>';
       }
     }
+    // 各項目の判定結果に関わらず、説明用のヒントアイコンを常に添える。
+    buyerSideExtraHtml += BUYER_SIDE_HINT_HTML;
+    smallAmountEligibleExtraHtml += SMALL_AMOUNT_HINT_HTML;
 
     const invoiceRows = [
       rowWithExtra('買い手側対応', buyerSideHtml, buyerSideExtraHtml, ROW_LINKS.buyerSide),
     ];
     if (OPTIONS.showSmallAmountBatch) {
-      invoiceRows.push(row('少額特例の一括修正', smallAmountBatchHtml, ROW_LINKS.smallAmountBatch));
+      invoiceRows.push(rowWithExtra('少額特例の一括修正', smallAmountBatchHtml, buildSmallAmountBatchHintHtml(isCorporate), ROW_LINKS.smallAmountBatch));
     }
     invoiceRows.push(
       rowWithExtra('少額特例の対象事業者', smallAmountEligibleHtml, smallAmountEligibleExtraHtml, ROW_LINKS.smallAmountEligible),
