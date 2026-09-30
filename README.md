@@ -11,6 +11,7 @@
 | [freee Help Link Copier](./freee-help-link-copier/) | freeeヘルプセンターの記事ページで、タイトルとURLをワンクリックでコピーできるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-help-link-copier/freee-help-link-copier.user.js) |
 | [freee 自動で経理の一部入出金補完](./freee-reconciliation-helper/) | freee会計の「自動で経理」で、未決済取引の消込の一部入出金額を自動入力し、未決済取引一覧の行クリック選択もできるようにするスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-reconciliation-helper/freee-reconciliation-helper.user.js) |
 | [freee 口座一覧コピー＆表示拡張](./freee-walletables-enhancer/) | freee会計の口座一覧・口座詳細画面を拡張し、口座一覧のコピー、勘定科目の確認、総勘定元帳を開く機能を追加するスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-walletables-enhancer/freee-walletables-enhancer.user.js) |
+| [freee会計 Ctrl+右クリック カスタム検索メニュー（β版）](./freee-custom-search-menu/) | freee会計の画面で選択した文字列や金額を、Ctrl+右クリックのメニューから取引・明細・仕訳帳などで検索できるスクリプト | [Raw URLから導入](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-custom-search-menu/freee-custom-search-menu.user.js) |
 
 各スクリプトの詳しい説明・使い方は、上記リンク先のフォルダ内README.mdをご覧ください。
 
