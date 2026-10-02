@@ -14,6 +14,19 @@ freee会計で記帳作業をしている最中に
 と思って確認しようとするとき、対象の画面を開いて検索条件を入力して絞り込むのは、少し面倒です。  
 画面上の文字列や金額を選んでそのまま検索できれば、手間なくパッと確認できて、記帳作業が捗ります。
 
+## スクリーンショット
+|▼文字列で検索|
+|:---|
+|![文字列を選択してCtrl+右クリックした図](./screenshot_1.png)|
+
+|▼金額で検索|
+|:---|
+|![金額を選択してCtrl+右クリックした図](./screenshot_2.png)|
+
+|▼取引先の詳細|
+|:---|
+|![取引先マスタの取引先詳細画面に検索ボタンが追加されている](./screenshot_3.png)|
+
 ## インストール
 
 [Raw URLはこちら](https://raw.githubusercontent.com/eustacia-jp/tampermonkey-scripts/main/freee-custom-search-menu/freee-custom-search-menu.user.js)
