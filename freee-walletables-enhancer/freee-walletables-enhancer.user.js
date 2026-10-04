@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         freee 口座一覧コピー＆表示拡張
 // @namespace    https://eustacia.jp/
-// @version      2.15.0
+// @version      2.15.1
 // @description  freee会計の口座一覧画面（/walletables）に、口座一覧をコピーできるボタンを追加するとともに、口座に対応する勘定科目（決算書表示名）および期末残高の表示、総勘定元帳へのリンクを追加するTampermonkeyユーザースクリプトです。また、口座の詳細画面にも、口座に対応する勘定科目、期末残高、総勘定元帳へのリンクを追加します。
 // @author       Eustacia.JP w/ Claude
 // @match        https://secure.freee.co.jp/walletables*
@@ -1291,7 +1291,7 @@
 
   function findCashBalanceJumpButton() {
     const link = document.querySelector('a[href*="/reports/cash_balance"]');
-    return link ? link.closest('.vb-jumpButton') : null;
+    return link ? link.closest('[class*="vb-jumpButton"]') : null;
   }
 
   // クレジットカードの詳細画面には「現預金レポート」ボタンが元々無いため、
@@ -1300,14 +1300,14 @@
   // 見つからない場合は「取引の一覧」ボタンにフォールバックする。
   function findTransferJumpButton() {
     const link = document.querySelector('a[href*="/deals#code=transfer"]');
-    return link ? link.closest('.vb-jumpButton') : null;
+    return link ? link.closest('[class*="vb-jumpButton"]') : null;
   }
 
   // 「取引の一覧」ボタン(href例: /deals#walletable[]=xxx&walletable_id[]=123)
   // 「口座振替の一覧」(href例: /deals#code=transfer&...)とはhash部分の先頭で区別できる
   function findTransactionsJumpButton() {
     const link = document.querySelector('a[href^="/deals#walletable"]');
-    return link ? link.closest('.vb-jumpButton') : null;
+    return link ? link.closest('[class*="vb-jumpButton"]') : null;
   }
 
   // 「明細の一覧」「取引の一覧」ボタンのリンクからwalletable_idを抜き出す
@@ -1405,7 +1405,7 @@
           const a = cashBtn.querySelector('a');
           if (a) {
             a.href = `https://secure.freee.co.jp/reports/cash_balance?walletable_for=${walletableId}`;
-            const textEl = a.querySelector('.vb-button__text');
+            const textEl = a.querySelector('[class*="vb-button__text"]');
             if (textEl) textEl.textContent = '現預金レポート';
           }
           insertionBaseBtn.insertAdjacentElement('afterend', cashBtn);
@@ -1421,7 +1421,7 @@
       const a = glBtn.querySelector('a');
       if (a) {
         a.href = buildGeneralLedgerUrl(accountName);
-        const textEl = a.querySelector('.vb-button__text');
+        const textEl = a.querySelector('[class*="vb-button__text"]');
         if (textEl) textEl.textContent = '総勘定元帳';
       }
       anchorBtn.insertAdjacentElement('afterend', glBtn);
